@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<style>
+body{
+	margin:0px;
+	padding:0px;
+}
+.bigbox{
+	position: absolute;
+	z-index: 100;
+	overflow: hidden;
+	width:200px;
+	height:200px;
+}
+.box{
+	position: relative;
+	width:800px;
+	left:0px;
+
+}
+.img{
+	position: relative;
+	width:200px;
+	height:200px;
+}
+.left{
+	position: absolute;
+	top:200px;
+	left:200px;
+}
+.right{
+	position: absolute;
+	top:200px;
+	left:100px;
+}
+
+.color{
+	background-color:orange;
+}
+
+.parent{
+	width:100%;
+	position: absolute;z-index: 1;
+	text-align: center;
+	bottom:10px;
+
+}
+
+.parent span{
+	padding:5px 10px;
+	background:orange;
+	color:red;
+	border-radius: 50%;
+	cursor:pointer;
+}
+
+.parent .selected{
+	background:red;
+	color:white;
+
+}
+
+
+</style>
+
+
+</head>
+<body>
+<div class="bigbox" id="bigbox">
+<div class="parent" id="parent">
+	<span class="selected">1</span>
+	<span>2</span>
+	<span>3</span>
+</div>
+<div class="box" id="box">
+<img src="./image/1.jpg"><img src="./image/2.jpg"><img src="./image/3.jpg"><img src="./image/1.jpg">
+</div>
+</div>
+
+<input class="left" type=button onclick="left()" value="left">
+<input class="right" type=button onclick="right()" value="right">
+
+
+<script>
+var index = 0;
+var bigbox = document.getElementById("bigbox")
+var lilist = document.getElementById("parent").getElementsByTagName("span")
+var big = document.getElementById("bigbox").offsetWidth;
+var time = 100;
+var box = document.getElementById("box");
+var ting = true;
+function clear() {
+	for(var i=0;i<lilist.length;i++){
+		lilist[i].className="";
+	}
+}
+
+function forward(){
+	clear()
+	index++
+	if(index>lilist.length-1){
+		index=0;
+	}
+	autogo()
+
+}
+
+function backward(){
+	clear()
+	index--
+	if(index<0){
+		index=2;
+	}
+	autogo()
+
+}
+
+function left(){
+	if(ting){
+		forward();
+	}
+	ting=false;
+}
+
+function right(){
+	if(ting){
+		backward();
+	}
+	ting=false;
+}
+
+for(var i=0;i<lilist.length;i++){
+	lilist[i].onclick=function(){
+		index=this.innerText-1;
+		clear()
+		autogo()
+	}
+}
+
+function autogo() {
+	var speed = 10;
+	var time = 100;
+	var timer = setInterval(function(){
+		var box = document.getElementById("box");
+		var start = box.offsetLeft;
+		var end = index*big*(-1);
+		var change = end - start;
+		var distance = change/time;
+		var old = start + distance + "px";
+		box.style.left = old;
+		time--;
+		if(time<=0){
+			clearInterval(timer)
+			ting = true;
+		}
+		
+	},10)
+	if(index==lilist.length){
+			lilist[0].className="selected"}
+	else{
+		lilist[index].className="selected"
+		}
+	}
+haha =setInterval("left()",2000)
+
+box.onmouseover = function() {
+	clearInterval(haha)
+}
+box.onmouseout = function() {
+	haha = setInterval("left()",2000)
+}
+
+</script>
+</body>
+</html>

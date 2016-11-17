@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body{
+	margin:0px;
+	padding:0px;
+}
+
+.it{
+	font-size:20px;
+	float:right;
+	margin-right:20%;
+	margin-top:10%;
+	background-color:white;
+}
+
+.border{
+	position: absolute;
+	top:50%;
+	left:50%;
+	width:200px;
+	height:200px;
+	border:1px solid;
+}
+
+img{
+	vertical-align : bottom
+}
+.bigplayer{
+	position: absolute;
+	left:200px;
+	top:200px;
+	height:171;
+	border:2px solid;
+}
+
+.top-bar{
+	background-color:#2d2c2c;
+	padding:10px;
+}
+
+.player{
+	background-color:orange;
+}
+
+.bar{
+	display: none;
+}
+
+.add-bar{
+	position: absolute;
+	left:57px;
+	width:57px;
+	height:57px;
+	border:2px solid;
+	background-color:orange;
+}
+
+.reduce-bar{
+	position: absolute;
+	top:134px;
+	left:57px;
+	width:57px;
+	height:57px;
+	border:2px solid;
+	background-color:orange;
+}
+
+.song{
+	background-color:orange;
+	display:none;
+}
+.name{
+	display:block;
+	vertical-align : bottom;
+	padding-bottom:2px;
+}
+</style>
+
+<script src="moudule/clipboard.js-master/dist/clipboard.min.js"></script>
+
+<script>
+
+	window.onload = function() {
+
+		//cilpboard
+		var clipboard = new Clipboard('.btn');
+	    clipboard.on('success', function(e) {
+	        console.log(e);
+	    });
+	    clipboard.on('error', function(e) {
+	        console.log(e);
+	    });
+
+	    //拖动音乐播放器
+		var move = document.getElementById("bigplayer")
+		move.onmousedown = function(ev){
+			var oevent = ev || event;
+
+			var distanceX = oevent.clientX - move.offsetLeft;
+			var distanceY = oevent.clientY - move.offsetTop;
+
+			document.onmousemove = function(ev){
+				var oevent = ev || event;
+				move.style.left = oevent.clientX - distanceX + "px";
+				move.style.top = oevent.clientY - distanceY + "px";
+			}
+
+			document.onmouseup = function() {
+				document.onmousemove = null;
+				document.onmouseup = null;
+			}
+		}
+	}
+	function playorpause() {
+		var x = document.getElementById("audio")
+		var p = document.getElementById("photo")
+
+		if(x.paused) {
+			x.play()
+			p.src = "image/stop.png"
+		}
+		else{
+			x.pause()
+			p.src = "image/start.png"
+		}
+	}
+
+	function quite() {
+		var x = document.getElementById("audio")
+		if(x.volume!=0){
+			x.volume = 0
+		}
+		else{
+			x.volume = 1
+		}
+	}
+
+	function showbar() {
+		var b = document.getElementById("bar")
+		b.style.display="block"
+	}
+
+	function hiddenbar() {
+		var b = document.getElementById("bar")
+		b.style.display="none"
+	}
+
+	function add() {
+		var x = document.getElementById("audio")
+		x.volume += 0.2
+	}
+
+	function reduce() {
+		var x = document.getElementById("audio")
+		x.volume -= 0.2
+	}
+
+	function clickname() {
+		var n = document.getElementById("song")
+		if(n.style.display!="block"){
+			n.style.display="block"
+		}
+		else{
+			n.style.display="none"
+		}
+	}
+
+	function showname() {
+		var n = document.getElementById("song")
+		n.style.display="block"
+	}
+
+	function hiddenname() {
+		var n = document.getElementById("song")
+		n.style.display="none"
+	}
+
+	function UltralightBeam() {
+		var x = document.getElementById("audio")
+		var p = document.getElementById("photo")
+		p.src = "image/stop.png"
+		x.src = "music/KanyeWest,ChanceTheRapper,KirkFranklin-UltralightBeam.mp3"
+		x.play()
+	}
+
+	function panda() {
+		var x = document.getElementById("audio")
+		var p = document.getElementById("photo")
+		p.src = "image/stop.png"
+		x.src = "music/Desiigner-Panda.mp3"
+		x.play()
+	}
+
+	function pyajax() {
+		var msg = document.getElementById("msg");
+
+		var f = document.user_info;
+		var userName = f.user_name.value;
+		var userAge = f.user_age.value;
+		var userSex = f.user_sex.value;
+
+		var url = "/cgi-bin/python.py";
+
+		var postStr = "user_name=" + userName + "%user_age=" + userAge + "&user_sex=" + userSex
+
+		ajax = new XMLHttpRequest();
+
+		ajax.open("POST", url, true);
+
+		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		ajax.send(postStr);
+
+		ajax.onreadystatechange = function() {
+			if(ajax.readyState == 4 && ajax.status == 200) {
+				msg.innerHTML = ajax.responseText;
+
+			}
+		}
+	}
+
+</script>
+</head>
+<body>
+<a class="it" href="https://demo.macheng.party" target="_blank">
+	<img src="image/airbnb.jpg">
+</a>
+<div class="border">
+	<div></div>
+</div>
+<audio id="audio">
+  <source src="music/Desiigner-Panda.mp3" type="audio/mpeg" />
+</audio>
+<div class="bigplayer" id="bigplayer">
+	<div class="top-bar"></div>
+	<div class="player">
+		<img src="image/start.png" id="photo" onclick="playorpause()"><img src="image/voice.png" onclick="quite()" onmouseover="showbar()" onmouseout="hiddenbar()"><img src="image/menu.png" onclick="clickname()" onmouseover="showname()" onmouseout="hiddenname()">
+	</div>
+	<div class="bar" id="bar">
+		<img src="image/add.png" class="add-bar" onclick="add()" onmouseover="showbar()" onmouseout="hiddenbar()">
+		<img src="image/reduce.png" class="reduce-bar" onclick="reduce()" onmouseover="showbar()" onmouseout="hiddenbar()">
+	</div>
+	<div class="song" id="song" onmouseover="showname()" onmouseout="hiddenname()">
+		<img src="image/panda.png" class="name" onclick="panda()">
+		<img src="image/ultralightbeam.png" class="name" onclick="UltralightBeam()">
+	</div>
+</div>
+<a class="it" href="https://macheng.party/cgi-bin/test.py" target="_blank">
+	<img src="image/airbnb.jpg">
+</a>
+
+<form action="./python.py" method="get">
+haha: <input type="text" name="name" /> <br/>
+
+hehe: <input type="text" name="url" />
+
+<input type="submit" value="提交" />
+	
+</form>
+
+<div id="foo">hahaha</div>
+ 
+<!-- Trigger -->
+<button class="btn" data-clipboard-target="#foo">hahahhhhhhhhhhhhhhhhhhh</button>
+
+<form name="user_info" method="post" action="">
+姓名：<input type="text" name="user_name" /><br />
+年龄：<input type="text" name="user_age" /><br />
+性别：<input type="text" name="user_sex" /><br />
+<input type="button" value="提交表单" onClick="saveUserInfo()">
+</form>
+</body>
+</html>
